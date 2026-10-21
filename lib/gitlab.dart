@@ -61,8 +61,9 @@ List<Map<String, dynamic>> _nodes(dynamic conn) =>
 /// Buckets the user's own open MRs the same way my-mr-status.sh does: a
 /// reviewer who reviewed without approving means changes were requested.
 /// So does an unresolved thread opened by another human, because people
-/// comment without ever being added as reviewers. [me] defaults to the
-/// author, but bot-authored MRs assigned to the user pass it explicitly.
+/// comment without ever being added as reviewers, unless [me] wrote the
+/// last reply and the thread is back with them to resolve. [me] defaults to
+/// the author, but bot-authored MRs assigned to the user pass it explicitly.
 Bucket classifyAuthored(Map<String, dynamic> mr, [String? me]) {
   final approvers = {for (final a in _nodes(mr['approvedBy'])) a['username']};
   final changes = _nodes(mr['reviewers']).any((r) {
@@ -80,7 +81,10 @@ Bucket classifyAuthored(Map<String, dynamic> mr, [String? me]) {
         d['resolved'] != true &&
         first != null &&
         first['bot'] != true &&
-        first['username'] != me;
+        first['username'] != me &&
+        _nodes(d['last'] ?? {'nodes': []})
+                .firstOrNull?['author']?['username'] !=
+            me;
   });
   if (changes || open) return Bucket.changes;
   if (mr['draft'] == true) return Bucket.drafts;
@@ -251,7 +255,7 @@ fragment Mr on MergeRequest {
   approvedBy { nodes { username } }
   reviewers { nodes { username mergeRequestInteraction { reviewState } } }
   detailedMergeStatus userPermissions { canApprove }
-  discussions(first: 100) { nodes { resolvable resolved notes(first: 1) { nodes { author { username bot } } } } }
+  discussions(first: 100) { nodes { resolvable resolved notes(first: 1) { nodes { author { username bot } } } last: notes(last: 1) { nodes { author { username } } } } }
 }
 ''';
 

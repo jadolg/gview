@@ -54,9 +54,17 @@ void main() {
       bool bot = false,
       bool resolvable = true,
       bool resolved = false,
+      String? reply,
     }) => {
       'resolvable': resolvable,
       'resolved': resolved,
+      'last': {
+        'nodes': [
+          {
+            'author': {'username': reply ?? by},
+          },
+        ],
+      },
       'notes': {
         'nodes': [
           {
@@ -71,6 +79,7 @@ void main() {
       thread('a', resolvable: false),
       thread('ai', bot: true),
       thread('me'),
+      thread('a', reply: 'me'),
     ]) {
       expect(classifyAuthored(mr(threads: [t])), Bucket.waiting);
     }

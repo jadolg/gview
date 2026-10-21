@@ -5,7 +5,7 @@ A macOS menu bar app that shows where your GitLab merge requests stand.
 gview sits in the menu bar with a count of the merge requests that need you. Click it to open a dashboard that sorts your open MRs into:
 
 - **Waiting on me**: MRs where someone actually asked you for a review or a reply. MRs you were only added to by approval rules or CODEOWNERS are left out.
-- **Changes requested**: your MRs where a reviewer reviewed without approving, or where someone else opened a thread that is still unresolved.
+- **Changes requested**: your MRs where a reviewer reviewed without approving, or where someone else opened a thread that is still unresolved and you have not replied to it yet.
 - **Ready to merge**: your MRs that GitLab says can be merged (or only need a rebase).
 - **Waiting for review**: your MRs that nobody has acted on yet.
 - **Drafts**: your draft MRs.
